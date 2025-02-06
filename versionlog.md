@@ -1,4 +1,4 @@
-## 0.6.30
+## 0.6.30 2025-02-06
 * Transitioned from core package to application.
 
 ## 0.6.29 2025-01-27
