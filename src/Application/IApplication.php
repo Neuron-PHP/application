@@ -14,6 +14,7 @@ interface IApplication extends Patterns\IRunnable
 	 * @param string $Section
 	 * @return mixed
 	 */
+
 	public function getSetting( string $Name, string $Section = 'default' );
 
 	/**
