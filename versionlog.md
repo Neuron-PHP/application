@@ -1,4 +1,5 @@
 ## 0.6.33
+* Added the Crashed state.
 
 ## 0.6.32 2025-05-21
 
