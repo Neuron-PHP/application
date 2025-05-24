@@ -125,7 +125,7 @@ class ApplicationTest extends TestCase
 		$this->_App->run();
 
 		$this->assertTrue(
-			$this->_App->DidCrash
+			$this->_App->getCrashed()
 		);
 	}
 
