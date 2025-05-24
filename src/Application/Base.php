@@ -27,6 +27,7 @@ abstract class Base implements IApplication
 	protected	string				$_Version;
 	protected	bool					$_HandleErrors = false;
 	protected	bool					$_HandleFatal  = false;
+	protected	bool					$_Crashed = false;
 
 	/**
 	 * Initial setup for the application.
@@ -54,6 +55,14 @@ abstract class Base implements IApplication
 		$this->_EventListenersPath = $this->getSetting( 'listeners_path', 'events' ) ?? '';
 
 		$this->initLogger();
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function getCrashed(): bool
+	{
+		return $this->_Crashed;
 	}
 
 	/**
@@ -280,6 +289,7 @@ abstract class Base implements IApplication
 
 	protected function onCrash( array $Error ) : void
 	{
+		$this->_Crashed = true;
 		Log\Log::fatal( "onCrash(): ".$Error[ 'message' ] );
 	}
 
