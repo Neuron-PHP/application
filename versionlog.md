@@ -1,4 +1,5 @@
 ## 0.6.34
+* Refactored get/set setting methods.
 
 ## 0.6.33 2025-05-23
 * Added the Crashed state.

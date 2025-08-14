@@ -10,21 +10,20 @@ use Neuron\Patterns;
 interface IApplication extends Patterns\IRunnable
 {
 	/**
-	 * @param string $Name
-	 * @param string $Section
+	 * @param string $section
+	 * @param string $name
 	 * @return mixed
 	 */
 
-	public function getSetting( string $Name, string $Section = 'default' );
+	public function getSetting( string $section, string $name ) : mixed;
 
 	/**
-	 * @param string $Name
-	 * @param string $Value
-	 * @param string $Section
-	 * @return mixed
+	 * @param string $section
+	 * @param string $name
+	 * @param string $value
+	 * @return void
 	 */
-
-	public function setSetting( string $Name, string $Value, string $Section = 'default' );
+	public function setSetting( string $section, string $name, string $value): void;
 
 	/**
 	 * @param string $name
