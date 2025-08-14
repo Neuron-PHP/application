@@ -1,4 +1,4 @@
-## 0.6.34
+## 0.7.0
 * Refactored get/set setting methods.
 
 ## 0.6.33 2025-05-23
