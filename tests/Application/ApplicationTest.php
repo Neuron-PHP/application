@@ -56,11 +56,11 @@ class ApplicationTest extends TestCase
 
 	public function testSetSetting()
 	{
-		$this->_App->setSetting( 'name', 'value', 'section' );
+		$this->_App->setSetting( 'section' ,'name', 'value' );
 
 		$this->assertEquals(
 			'value',
-			$this->_App->getSetting( 'name', 'section' )
+			$this->_App->getSetting( 'section', 'name' )
 		);
 	}
 

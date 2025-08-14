@@ -50,9 +50,9 @@ abstract class Base implements IApplication
 
 		$this->initSettings( $Source );
 
-		date_default_timezone_set( $this->getSetting( 'timezone', 'system' ) ?? 'UTC' );
+		date_default_timezone_set( $this->getSetting( 'system', 'timezone' ) ?? 'UTC' );
 
-		$this->_EventListenersPath = $this->getSetting( 'listeners_path', 'events' ) ?? '';
+		$this->_EventListenersPath = $this->getSetting( 'events', 'listeners_path' ) ?? '';
 
 		$this->initLogger();
 	}
@@ -126,8 +126,8 @@ abstract class Base implements IApplication
 		// Create a new default logger using the destination and format
 		// specified in the settings.
 
-		$DestClass   = $this->getSetting( "destination", "logging" );
-		$FormatClass = $this->getSetting( "format", "logging" );
+		$DestClass   = $this->getSetting( 'logging', 'destination' );
+		$FormatClass = $this->getSetting( 'logging', 'format' );
 
 		if( !$DestClass || !$FormatClass )
 		{
@@ -138,7 +138,7 @@ abstract class Base implements IApplication
 
 		$DefaultLog = new Logger( $Destination );
 
-		$FileName = $this->getSetting( "file", "logging" );
+		$FileName = $this->getSetting( 'logging','file' );
 		if( $FileName )
 		{
 			$Destination->open(
@@ -148,7 +148,7 @@ abstract class Base implements IApplication
 			);
 		}
 
-		$DefaultLog->setRunLevel( $this->getSetting( "level", "logging" ) ?? (int)ILogger::DEBUG );
+		$DefaultLog->setRunLevel( $this->getSetting( 'logging', 'level' ) ?? (int)ILogger::DEBUG );
 
 		$Log->Logger->addLog( $DefaultLog );
 
@@ -207,25 +207,18 @@ abstract class Base implements IApplication
 	}
 
 	/**
-	 * @param string $Name
-	 * @param string $Section
+	 * @param string $section
+	 * @param string $name
 	 * @return mixed
 	 */
-
-	public function getSetting( string $Name, string $Section = 'default' ): mixed
+	public function getSetting( string $section, string $name ): mixed
 	{
-		return $this->_Settings?->get( $Section, $Name );
+		return $this->_Settings?->get( $section, $name );
 	}
 
-	/**
-	 * @param string $Name
-	 * @param string $Value
-	 * @param string $Section
-	 */
-
-	public function setSetting( string $Name, string $Value, string $Section = 'default' ): void
+	public function setSetting( string $section, string $name, string $value ): void
 	{
-		$this->_Settings->set( $Section, $Name, $Value );
+		$this->_Settings->set( $section, $name, $value );
 	}
 
 	/**
@@ -517,7 +510,7 @@ abstract class Base implements IApplication
 		{
 			$this->_Settings = new SettingManager( $Source );
 
-			$BasePath = $this->getSetting( 'base_path', 'system' ) ?? $DefaultBasePath;
+			$BasePath = $this->getSetting( 'system','base_path' ) ?? $DefaultBasePath;
 			$Fallback = new Env( Data\Env::getInstance( "$BasePath/.env" ) );
 			$this->_Settings->setFallback( $Fallback );
 			$this->setBasePath( $BasePath );

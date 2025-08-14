@@ -1,6 +1,6 @@
 <?php
 
-namespace CrossCutting;
+namespace Tests\Application\CrossCutting;
 
 use Core\Facades\ListenerTest;
 use Core\Facades\TempEvent;

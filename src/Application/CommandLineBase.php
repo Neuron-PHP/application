@@ -44,7 +44,6 @@ abstract class CommandLineBase extends Base
 	 * @param string $Method the name of the switch handler method.
 	 * @param bool|bool $Param if true, the next parameter will be passed to the handler as the value of the switch.
 	 */
-
 	protected function addHandler( string $Switch, string $Description, string $Method, bool $Param = false ): void
 	{
 		$this->_Handlers[ $Switch ] = [
