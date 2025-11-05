@@ -222,6 +222,14 @@ abstract class Base implements IApplication
 	}
 
 	/**
+	 * @return ?SettingManager
+	 */
+	public function getSettingManager(): ?SettingManager
+	{
+		return $this->_Settings;
+	}
+
+	/**
 	 * Returns true if the application is running in command line mode.
 	 * @return bool
 	 */
