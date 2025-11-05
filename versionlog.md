@@ -1,4 +1,3 @@
-## 0.7.2
 * Added getSettingManager() method to provide access to SettingManager instance
 
 ## 0.7.1
