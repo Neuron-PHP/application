@@ -216,6 +216,12 @@ abstract class Base implements IApplication
 		return $this->_Settings?->get( $section, $name );
 	}
 
+	/**
+	 * @param string $section
+	 * @param string $name
+	 * @param string $value
+	 * @return void
+	 */
 	public function setSetting( string $section, string $name, string $value ): void
 	{
 		$this->_Settings->set( $section, $name, $value );

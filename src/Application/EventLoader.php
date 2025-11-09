@@ -33,7 +33,6 @@ class EventLoader
 
 		if( !file_exists( $Path . '/event-listeners.yaml' ) )
 		{
-			Log\Log::debug( "event-listeners.yaml not found." );
 			return;
 		}
 
