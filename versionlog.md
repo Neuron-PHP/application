@@ -1,4 +1,5 @@
 ## 0.8.3
+* Improved error handling.
 
 ## 0.8.2 2025-11-08
 

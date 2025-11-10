@@ -302,14 +302,104 @@ abstract class Base implements IApplication
 
 	/**
 	 * Handler for fatal errors.
+	 * Checks for actual fatal errors and formats them for display
 	 * @return void
 	 */
 
 	public function fatalHandler(): void
 	{
-		Log\Log::debug( "fatalHandler()" );
+		$Error = error_get_last();
 
-		$this->onCrash( [ 'message' => 'Application shutdown' ] );
+		// Only handle actual fatal errors (not clean shutdowns)
+		if( $Error && in_array( $Error['type'], [ E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR ] ) )
+		{
+			// Get error type name
+			$TypeNames = [
+				E_ERROR => 'Fatal Error',
+				E_PARSE => 'Parse Error',
+				E_CORE_ERROR => 'Core Error',
+				E_COMPILE_ERROR => 'Compile Error',
+				E_USER_ERROR => 'User Error'
+			];
+
+			$TypeName = $TypeNames[ $Error['type'] ] ?? 'Unknown Fatal Error';
+
+			// Call onCrash with detailed error information
+			$this->onCrash([
+				'type' => $TypeName,
+				'message' => $Error['message'],
+				'file' => $Error['file'],
+				'line' => $Error['line']
+			]);
+
+			// Format output based on context (web vs CLI)
+			echo $this->formatFatalError( $TypeName, $Error['message'], $Error['file'], $Error['line'] );
+		}
+	}
+
+	/**
+	 * Format fatal error for display
+	 * Uses HTML for web, plain text for CLI
+	 *
+	 * @param string $Type
+	 * @param string $Message
+	 * @param string $File
+	 * @param int $Line
+	 * @return string
+	 */
+	protected function formatFatalError( string $Type, string $Message, string $File, int $Line ): string
+	{
+		if( $this->isCommandLine() )
+		{
+			// CLI format (plain text)
+			$Output = "\n";
+			$Output .= str_repeat( '=', 80 ) . "\n";
+			$Output .= "FATAL ERROR\n";
+			$Output .= str_repeat( '=', 80 ) . "\n\n";
+			$Output .= "Type:    $Type\n";
+			$Output .= "Message: $Message\n";
+			$Output .= "File:    $File\n";
+			$Output .= "Line:    $Line\n";
+			$Output .= str_repeat( '=', 80 ) . "\n";
+
+			return $Output;
+		}
+		else
+		{
+			// Web format (HTML)
+			$TypeEsc = htmlspecialchars( $Type, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8' );
+			$MessageEsc = htmlspecialchars( $Message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8' );
+			$FileEsc = htmlspecialchars( $File, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8' );
+
+			return <<<HTML
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Fatal Error: $TypeEsc</title>
+	<style>
+		body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+		.error-container { background: white; padding: 30px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+		h1 { color: #c00; margin-top: 0; }
+		.error-type { color: #666; font-size: 14px; margin-bottom: 20px; }
+		.error-message { font-size: 18px; margin-bottom: 20px; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; }
+		.error-location { margin-bottom: 20px; padding: 10px; background: #f8f9fa; border-radius: 3px; }
+		.error-location strong { color: #333; }
+	</style>
+</head>
+<body>
+	<div class="error-container">
+		<h1>Fatal Error</h1>
+		<div class="error-type">$TypeEsc</div>
+		<div class="error-message">$MessageEsc</div>
+		<div class="error-location">
+			<strong>File:</strong> $FileEsc<br>
+			<strong>Line:</strong> $Line
+		</div>
+	</div>
+</body>
+</html>
+HTML;
+		}
 	}
 
 	/**
@@ -348,6 +438,63 @@ abstract class Base implements IApplication
 
 		$this->onError( sprintf( "PHP %s:  %s in %s on line %d", $Type, $Message, $File, $Line ));
 		return true;
+	}
+
+	/**
+	 * Global exception handler for uncaught exceptions and errors
+	 * Handles both Exception and Error (PHP 7+)
+	 *
+	 * @param \Throwable $Throwable
+	 * @return void
+	 */
+	public function globalExceptionHandler( \Throwable $Throwable ): void
+	{
+		// Call onCrash with error details (handles logging and state)
+		$this->onCrash([
+			'type' => get_class( $Throwable ),
+			'message' => $Throwable->getMessage(),
+			'file' => $Throwable->getFile(),
+			'line' => $Throwable->getLine(),
+			'trace' => $Throwable->getTraceAsString()
+		]);
+
+		// Output formatted error (HTML for web, plain text for CLI)
+		echo $this->beautifyException( $Throwable );
+
+		exit( 1 );
+	}
+
+	/**
+	 * Format exception/error for display
+	 * Base implementation outputs plain text (CLI-friendly)
+	 * MVC Application overrides this for HTML output
+	 *
+	 * @param \Throwable $Throwable
+	 * @return string
+	 */
+	public function beautifyException( \Throwable $Throwable ): string
+	{
+		$Type = get_class( $Throwable );
+		$Message = $Throwable->getMessage();
+		$File = $Throwable->getFile();
+		$Line = $Throwable->getLine();
+		$Trace = $Throwable->getTraceAsString();
+
+		$Output = "\n";
+		$Output .= str_repeat( '=', 80 ) . "\n";
+		$Output .= "APPLICATION ERROR\n";
+		$Output .= str_repeat( '=', 80 ) . "\n\n";
+		$Output .= "Type:    $Type\n";
+		$Output .= "Message: $Message\n";
+		$Output .= "File:    $File\n";
+		$Output .= "Line:    $Line\n\n";
+		$Output .= str_repeat( '-', 80 ) . "\n";
+		$Output .= "Stack Trace:\n";
+		$Output .= str_repeat( '-', 80 ) . "\n";
+		$Output .= $Trace . "\n";
+		$Output .= str_repeat( '=', 80 ) . "\n";
+
+		return $Output;
 	}
 
 	/**
@@ -497,6 +644,14 @@ abstract class Base implements IApplication
 				[
 					$this,
 					'fatalHandler'
+				]
+			);
+
+			// Also set global exception handler for uncaught Throwables (Error & Exception)
+			set_exception_handler(
+				[
+					$this,
+					'globalExceptionHandler'
 				]
 			);
 		}
