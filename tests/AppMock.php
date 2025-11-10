@@ -47,7 +47,13 @@ class AppMock extends Base
 
 	public function crash(): void
 	{
-		$this->fatalHandler();
+		// Simulate a crash by calling onCrash directly with mock error details
+		$this->onCrash([
+			'type' => 'Mock Fatal Error',
+			'message' => 'Simulated crash for testing',
+			'file' => __FILE__,
+			'line' => __LINE__
+		]);
 	}
 
 	protected function onError( string $Message ) : bool
