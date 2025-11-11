@@ -51,42 +51,42 @@ class Event extends Memory
 	}
 
 	/**
-	 * @param array $Registry
+	 * @param array $registry
 	 * @return void
 	 */
 
-	public static function registerListeners( array $Registry ) : void
+	public static function registerListeners( array $registry ) : void
 	{
-		$Emitter = self::getInstance();
-		$Emitter->initIfNeeded();
+		$emitter = self::getInstance();
+		$emitter->initIfNeeded();
 
-		$Emitter->getEmitter()->registerListeners( $Registry );
+		$emitter->getEmitter()->registerListeners( $registry );
 	}
 
 	/**
-	 * @param string $EventName
-	 * @param string $Listener
+	 * @param string $eventName
+	 * @param string $listener
 	 * @return void
 	 */
 
-	public static function registerListener( string $EventName, string $Listener ) : void
+	public static function registerListener( string $eventName, string $listener ) : void
 	{
-		$Emitter = self::getInstance();
-		$Emitter->initIfNeeded();
+		$emitter = self::getInstance();
+		$emitter->initIfNeeded();
 
-		$Emitter->getEmitter()->registerListener( $EventName, $Listener );
+		$emitter->getEmitter()->registerListener( $eventName, $listener );
 	}
 
 	/**
-	 * @param $Event
+	 * @param $event
 	 * @return void
 	 */
 
-	public static function emit( $Event ) : void
+	public static function emit( $event ) : void
 	{
-		$Emitter = self::getInstance();
-		$Emitter->initIfNeeded();
+		$emitter = self::getInstance();
+		$emitter->initIfNeeded();
 
-		$Emitter->getEmitter()->emit( $Event );
+		$emitter->getEmitter()->emit( $event );
 	}
 }
