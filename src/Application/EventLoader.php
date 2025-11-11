@@ -13,11 +13,11 @@ use Symfony\Component\Yaml\Yaml;
  */
 class EventLoader
 {
-	private Base $_Base;
+	private Base $_base;
 
 	public function __construct( Base $base )
 	{
-		$this->_Base = $base;
+		$this->_base = $base;
 	}
 
 	/**
@@ -28,16 +28,16 @@ class EventLoader
 	{
 		Event::registerBroadcaster( new Generic() );
 
-		$Path = $this->getPath();
+		$path = $this->getPath();
 
-		if( !file_exists( $Path . '/event-listeners.yaml' ) )
+		if( !file_exists( $path . '/event-listeners.yaml' ) )
 		{
 			return;
 		}
 
 		try
 		{
-			$Data = Yaml::parseFile( $Path . '/event-listeners.yaml' );
+			$data = Yaml::parseFile( $path . '/event-listeners.yaml' );
 		}
 		catch( ParseException $exception )
 		{
@@ -45,7 +45,7 @@ class EventLoader
 			return;
 		}
 
-		$this->loadEvents( $Data[ 'events' ] );
+		$this->loadEvents( $data[ 'events' ] );
 	}
 
 	/**
@@ -54,13 +54,13 @@ class EventLoader
 
 	protected function getPath(): string
 	{
-		$File = $this->_Base->getBasePath() . '/config';
+		$file = $this->_base->getBasePath() . '/config';
 
-		if( $this->_Base->getEventListenersPath() )
+		if( $this->_base->getEventListenersPath() )
 		{
-			$File = $this->_Base->getEventListenersPath();
+			$file = $this->_base->getEventListenersPath();
 		}
-		return $File;
+		return $file;
 	}
 
 	/**
@@ -70,11 +70,11 @@ class EventLoader
 
 	protected function loadEvents( $events ): void
 	{
-		foreach( $events as $Event )
+		foreach( $events as $event )
 		{
-			foreach( $Event[ 'listeners' ] as $Listener )
+			foreach( $event[ 'listeners' ] as $listener )
 			{
-				Event::registerListener( $Event[ 'class' ], $Listener );
+				Event::registerListener( $event[ 'class' ], $listener );
 			}
 		}
 	}

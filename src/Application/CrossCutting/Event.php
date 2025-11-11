@@ -13,7 +13,7 @@ use Neuron\Patterns\Singleton\Memory;
 
 class Event extends Memory
 {
-	private ?EventEmitter $_Emitter = null;
+	private ?EventEmitter $_emitter = null;
 
 	/**
 	 * @return EventEmitter|null
@@ -21,7 +21,7 @@ class Event extends Memory
 
 	public function getEmitter() : ?EventEmitter
 	{
-		return $this->_Emitter;
+		return $this->_emitter;
 	}
 
 	/**
@@ -30,24 +30,24 @@ class Event extends Memory
 
 	public function initIfNeeded(): void
 	{
-		if( !$this->_Emitter )
+		if( !$this->_emitter )
 		{
-			$this->_Emitter = new EventEmitter();
+			$this->_emitter = new EventEmitter();
 			$this->serialize();
 		}
 	}
 
 	/**
-	 * @param IBroadcaster $Broadcaster
+	 * @param IBroadcaster $broadcaster
 	 * @return void
 	 */
 
-	public static function registerBroadcaster( IBroadcaster $Broadcaster ) : void
+	public static function registerBroadcaster( IBroadcaster $broadcaster ) : void
 	{
-		$Emitter = self::getInstance();
-		$Emitter->initIfNeeded();
+		$emitter = self::getInstance();
+		$emitter->initIfNeeded();
 
-		$Emitter->getEmitter()->registerBroadcaster( $Broadcaster );
+		$emitter->getEmitter()->registerBroadcaster( $broadcaster );
 	}
 
 	/**

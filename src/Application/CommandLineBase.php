@@ -13,7 +13,7 @@ use Neuron\Log;
 
 abstract class CommandLineBase extends Base
 {
-	private array $_Handlers;
+	private array $_handlers;
 
 	/**
 	 * Get the description of the application for --help.
@@ -29,27 +29,27 @@ abstract class CommandLineBase extends Base
 
 	protected function getHandlers(): array
 	{
-		return $this->_Handlers;
+		return $this->_handlers;
 	}
 
 	/**
 	 * Adds a handler for command line parameters.
 	 * The switch is the parameter that causes the specified method to be called.
-	 * If the Param parameter is set to true, the token immediately following the
+	 * If the param parameter is set to true, the token immediately following the
 	 * switch on the command line will be passed as the parameter to the handler.
 	 * @SuppressWarnings(PHPMD.BooleanArgumentFlag)
 	 *
-	 * @param string $Switch the name of the switch.
-	 * @param string $Description the description of the switch.
-	 * @param string $Method the name of the switch handler method.
-	 * @param bool|bool $Param if true, the next parameter will be passed to the handler as the value of the switch.
+	 * @param string $switch the name of the switch.
+	 * @param string $description the description of the switch.
+	 * @param string $method the name of the switch handler method.
+	 * @param bool|bool $param if true, the next parameter will be passed to the handler as the value of the switch.
 	 */
-	protected function addHandler( string $Switch, string $Description, string $Method, bool $Param = false ): void
+	protected function addHandler( string $switch, string $description, string $method, bool $param = false ): void
 	{
-		$this->_Handlers[ $Switch ] = [
-			'description'	=> $Description,
-			'method'			=> $Method,
-			'param'			=> $Param
+		$this->_handlers[ $switch ] = [
+			'description'	=> $description,
+			'method'			=> $method,
+			'param'			=> $param
 		];
 	}
 
@@ -61,13 +61,13 @@ abstract class CommandLineBase extends Base
 
 	protected function processParameters(): bool
 	{
-		$ParamCount = count( $this->getParameters() );
+		$paramCount = count( $this->getParameters() );
 
-		for( $c = 0; $c < $ParamCount; $c++ )
+		for( $c = 0; $c < $paramCount; $c++ )
 		{
-			$Param = $this->getParameters()[ $c ];
+			$param = $this->getParameters()[ $c ];
 
-			if( !$this->handleParameter( $Param, $c, $this->getParameters() ) )
+			if( !$this->handleParameter( $param, $c, $this->getParameters() ) )
 			{
 				return false;
 			}
@@ -78,27 +78,27 @@ abstract class CommandLineBase extends Base
 
 	/**
 	 * Handles a single parameter passed on the command line.
-	 * @param string $Param
-	 * @param int $Index
+	 * @param string $param
+	 * @param int $index
 	 * @return bool returns false if the execution should be halted.
 	 */
 
-	private function handleParameter( string $Param, int &$Index ): bool
+	private function handleParameter( string $param, int &$index ): bool
 	{
-		foreach( $this->getHandlers() as $Switch => $Info )
+		foreach( $this->getHandlers() as $switch => $info )
 		{
-			if( $Switch != $Param )
+			if( $switch != $param )
 			{
 				continue;
 			}
 
-			$Method = $Info[ 'method' ];
+			$method = $info[ 'method' ];
 
-			if( $Info[ 'param' ] )
+			if( $info[ 'param' ] )
 			{
-				$Index++;
-				$Value = $this->getParameters()[ $Index ];
-				if( !$this->$Method( $Value ) )
+				$index++;
+				$value = $this->getParameters()[ $index ];
+				if( !$this->$method( $value ) )
 				{
 					return false;
 				}
@@ -106,7 +106,7 @@ abstract class CommandLineBase extends Base
 				continue;
 			}
 
-			return $this->$Method();
+			return $this->$method();
 		}
 
 		return true;
@@ -123,24 +123,24 @@ abstract class CommandLineBase extends Base
 		echo 'v'.$this->getVersion()."\n";
 		echo $this->getDescription()."\n\n";
 		echo "Switches:\n";
-		$Handlers = $this->getHandlers();
-		ksort( $Handlers );
+		$handlers = $this->getHandlers();
+		ksort( $handlers );
 
 		echo str_pad( 'Switch', 15 )."Value\n";
 		echo str_pad( '------', 15 )."-----\n";
 
-		foreach( $Handlers as $Switch => $Info )
+		foreach( $handlers as $switch => $info )
 		{
-			if( $Info[ 'param' ] )
+			if( $info[ 'param' ] )
 			{
-				$Value = str_pad( 'true', 5 );
+				$value = str_pad( 'true', 5 );
 			}
 			else
 			{
-				$Value = str_pad( ' ', 5 );
+				$value = str_pad( ' ', 5 );
 			}
 
-			echo str_pad( $Switch, 15 ).$Value."$Info[description]\n";
+			echo str_pad( $switch, 15 ).$value."$info[description]\n";
 		}
 
 		return false;
