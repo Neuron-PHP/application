@@ -19,15 +19,15 @@ use Neuron\Util;
 
 abstract class Base implements IApplication
 {
-	private		string         $_BasePath;
-	private		string         $_EventListenersPath;
-	private		?Registry			$_Registry;
-	protected	array					$_Parameters;
-	protected	?SettingManager	$_Settings = null;
-	protected	string				$_Version;
-	protected	bool					$_HandleErrors = false;
-	protected	bool					$_HandleFatal  = false;
-	protected	bool					$_Crashed = false;
+	private		string         $_basePath;
+	private		string         $_eventListenersPath;
+	private		?Registry			$_registry;
+	protected	array					$_parameters;
+	protected	?SettingManager	$_settings = null;
+	protected	string				$_version;
+	protected	bool					$_handleErrors = false;
+	protected	bool					$_handleFatal  = false;
+	protected	bool					$_crashed = false;
 
 	/**
 	 * Initial setup for the application.
@@ -35,24 +35,24 @@ abstract class Base implements IApplication
 	 * Loads the config file.
 	 * Initializes the logger.
 	 *
-	 * @param string $Version
-	 * @param ISettingSource|null $Source
+	 * @param string $version
+	 * @param ISettingSource|null $source
 	 * @throws Exception
 	 */
 
-	public function __construct( string $Version, ?ISettingSource $Source = null )
+	public function __construct( string $version, ?ISettingSource $source = null )
 	{
-		$this->_BasePath = '.';
+		$this->_basePath = '.';
 
-		$this->_Registry = Registry::getInstance();
+		$this->_registry = Registry::getInstance();
 
-		$this->_Version = $Version;
+		$this->_version = $version;
 
-		$this->initSettings( $Source );
+		$this->initSettings( $source );
 
 		date_default_timezone_set( $this->getSetting( 'system', 'timezone' ) ?? 'UTC' );
 
-		$this->_EventListenersPath = $this->getSetting( 'events', 'listeners_path' ) ?? '';
+		$this->_eventListenersPath = $this->getSetting( 'events', 'listeners_path' ) ?? '';
 
 		$this->initLogger();
 	}
@@ -62,7 +62,7 @@ abstract class Base implements IApplication
 	 */
 	public function getCrashed(): bool
 	{
-		return $this->_Crashed;
+		return $this->_crashed;
 	}
 
 	/**
@@ -71,17 +71,17 @@ abstract class Base implements IApplication
 
 	public function getEventListenersPath(): string
 	{
-		return $this->_EventListenersPath;
+		return $this->_eventListenersPath;
 	}
 
 	/**
-	 * @param string $EventListenersPath
+	 * @param string $eventListenersPath
 	 * @return Base
 	 */
 
-	public function setEventListenersPath( string $EventListenersPath ): Base
+	public function setEventListenersPath( string $eventListenersPath ): Base
 	{
-		$this->_EventListenersPath = $EventListenersPath;
+		$this->_eventListenersPath = $eventListenersPath;
 		return $this;
 	}
 
@@ -91,17 +91,17 @@ abstract class Base implements IApplication
 
 	public function getBasePath(): string
 	{
-		return $this->_BasePath;
+		return $this->_basePath;
 	}
 
 	/**
-	 * @param string $BasePath
+	 * @param string $basePath
 	 * @return Base
 	 */
 
-	public function setBasePath( string $BasePath ): Base
+	public function setBasePath( string $basePath ): Base
 	{
-		$this->_BasePath = $BasePath;
+		$this->_basePath = $basePath;
 		return $this;
 	}
 
@@ -116,43 +116,43 @@ abstract class Base implements IApplication
 
 	public function initLogger(): void
 	{
-		/** @var Log\Log $Log */
-		$Log = Log\Log::getInstance();
+		/** @var Log\Log $log */
+		$log = Log\Log::getInstance();
 
-		$Log->initIfNeeded();
+		$log->initIfNeeded();
 
-		$Log->Logger->reset();
+		$log->Logger->reset();
 
 		// Create a new default logger using the destination and format
 		// specified in the settings.
 
-		$DestClass   = $this->getSetting( 'logging', 'destination' );
-		$FormatClass = $this->getSetting( 'logging', 'format' );
+		$destClass   = $this->getSetting( 'logging', 'destination' );
+		$formatClass = $this->getSetting( 'logging', 'format' );
 
-		if( !$DestClass || !$FormatClass )
+		if( !$destClass || !$formatClass )
 		{
 			return;
 		}
 
-		$Destination = new $DestClass( new $FormatClass() );
+		$destination = new $destClass( new $formatClass() );
 
-		$DefaultLog = new Logger( $Destination );
+		$defaultLog = new Logger( $destination );
 
-		$FileName = $this->getSetting( 'logging','file' );
-		if( $FileName )
+		$fileName = $this->getSetting( 'logging','file' );
+		if( $fileName )
 		{
-			$Destination->open(
+			$destination->open(
 				[
-					'file_name' => $this->getBasePath().'/'.$FileName
+					'file_name' => $this->getBasePath().'/'.$fileName
 				]
 			);
 		}
 
-		$DefaultLog->setRunLevel( $this->getSetting( 'logging', 'level' ) ?? (int)ILogger::DEBUG );
+		$defaultLog->setRunLevel( $this->getSetting( 'logging', 'level' ) ?? (int)ILogger::DEBUG );
 
-		$Log->Logger->addLog( $DefaultLog );
+		$log->Logger->addLog( $defaultLog );
 
-		$Log->serialize();
+		$log->serialize();
 	}
 
 	/**
@@ -161,17 +161,17 @@ abstract class Base implements IApplication
 
 	public function willHandleErrors(): bool
 	{
-		return $this->_HandleErrors;
+		return $this->_handleErrors;
 	}
 
 	/**
-	 * @param bool $HandleErrors
+	 * @param bool $handleErrors
 	 * @return Base
 	 */
 
-	public function setHandleErrors( bool $HandleErrors ): Base
+	public function setHandleErrors( bool $handleErrors ): Base
 	{
-		$this->_HandleErrors = $HandleErrors;
+		$this->_handleErrors = $handleErrors;
 		return $this;
 	}
 
@@ -181,28 +181,28 @@ abstract class Base implements IApplication
 
 	public function willHandleFatal(): bool
 	{
-		return $this->_HandleFatal;
+		return $this->_handleFatal;
 	}
 
 	/**
-	 * @param bool $HandleFatal
+	 * @param bool $handleFatal
 	 * @return Base
 	 */
 
-	public function setHandleFatal( bool $HandleFatal ): Base
+	public function setHandleFatal( bool $handleFatal ): Base
 	{
-		$this->_HandleFatal = $HandleFatal;
+		$this->_handleFatal = $handleFatal;
 		return $this;
 	}
 
 	/**
-	 * @param ISettingSource $Source
+	 * @param ISettingSource $source
 	 * @return $this
 	 */
 
-	public function setSettingSource( ISettingSource $Source ) : Base
+	public function setSettingSource( ISettingSource $source ) : Base
 	{
-		$this->_Settings = new SettingManager( $Source );
+		$this->_settings = new SettingManager( $source );
 		return $this;
 	}
 
@@ -213,7 +213,7 @@ abstract class Base implements IApplication
 	 */
 	public function getSetting( string $section, string $name ): mixed
 	{
-		return $this->_Settings?->get( $section, $name );
+		return $this->_settings?->get( $section, $name );
 	}
 
 	/**
@@ -224,7 +224,7 @@ abstract class Base implements IApplication
 	 */
 	public function setSetting( string $section, string $name, string $value ): void
 	{
-		$this->_Settings->set( $section, $name, $value );
+		$this->_settings->set( $section, $name, $value );
 	}
 
 	/**
@@ -232,7 +232,7 @@ abstract class Base implements IApplication
 	 */
 	public function getSettingManager(): ?SettingManager
 	{
-		return $this->_Settings;
+		return $this->_settings;
 	}
 
 	/**
@@ -276,13 +276,13 @@ abstract class Base implements IApplication
 	 * Called for any unhandled exceptions.
 	 * Returning false skips executing onFinish.
 	 *
-	 * @param string $Message
+	 * @param string $message
 	 * @return bool
 	 */
 
-	protected function onError( string $Message ) : bool
+	protected function onError( string $message ) : bool
 	{
-		Log\Log::error( "onError(): $Message" );
+		Log\Log::error( "onError(): $message" );
 
 		return true;
 	}
@@ -290,14 +290,14 @@ abstract class Base implements IApplication
 	/**
 	 * Called by the fatal handler if invoked.
 	 *
-	 * @param array $Error
+	 * @param array $error
 	 * @return void
 	 */
 
-	protected function onCrash( array $Error ) : void
+	protected function onCrash( array $error ) : void
 	{
-		$this->_Crashed = true;
-		Log\Log::fatal( "onCrash(): ".$Error[ 'message' ] );
+		$this->_crashed = true;
+		Log\Log::fatal( "onCrash(): ".$error[ 'message' ] );
 	}
 
 	/**
@@ -308,13 +308,13 @@ abstract class Base implements IApplication
 
 	public function fatalHandler(): void
 	{
-		$Error = error_get_last();
+		$error = error_get_last();
 
 		// Only handle actual fatal errors (not clean shutdowns)
-		if( $Error && in_array( $Error['type'], [ E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR ] ) )
+		if( $error && in_array( $error['type'], [ E_ERROR, E_PARSE, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR ] ) )
 		{
 			// Get error type name
-			$TypeNames = [
+			$typeNames = [
 				E_ERROR => 'Fatal Error',
 				E_PARSE => 'Parse Error',
 				E_CORE_ERROR => 'Core Error',
@@ -322,18 +322,18 @@ abstract class Base implements IApplication
 				E_USER_ERROR => 'User Error'
 			];
 
-			$TypeName = $TypeNames[ $Error['type'] ] ?? 'Unknown Fatal Error';
+			$typeName = $typeNames[ $error['type'] ] ?? 'Unknown Fatal Error';
 
 			// Call onCrash with detailed error information
 			$this->onCrash([
-				'type' => $TypeName,
-				'message' => $Error['message'],
-				'file' => $Error['file'],
-				'line' => $Error['line']
+				'type' => $typeName,
+				'message' => $error['message'],
+				'file' => $error['file'],
+				'line' => $error['line']
 			]);
 
 			// Format output based on context (web vs CLI)
-			echo $this->formatFatalError( $TypeName, $Error['message'], $Error['file'], $Error['line'] );
+			echo $this->formatFatalError( $typeName, $error['message'], $error['file'], $error['line'] );
 		}
 	}
 
@@ -341,41 +341,41 @@ abstract class Base implements IApplication
 	 * Format fatal error for display
 	 * Uses HTML for web, plain text for CLI
 	 *
-	 * @param string $Type
-	 * @param string $Message
-	 * @param string $File
-	 * @param int $Line
+	 * @param string $type
+	 * @param string $message
+	 * @param string $file
+	 * @param int $line
 	 * @return string
 	 */
-	protected function formatFatalError( string $Type, string $Message, string $File, int $Line ): string
+	protected function formatFatalError( string $type, string $message, string $file, int $line ): string
 	{
 		if( $this->isCommandLine() )
 		{
 			// CLI format (plain text)
-			$Output = "\n";
-			$Output .= str_repeat( '=', 80 ) . "\n";
-			$Output .= "FATAL ERROR\n";
-			$Output .= str_repeat( '=', 80 ) . "\n\n";
-			$Output .= "Type:    $Type\n";
-			$Output .= "Message: $Message\n";
-			$Output .= "File:    $File\n";
-			$Output .= "Line:    $Line\n";
-			$Output .= str_repeat( '=', 80 ) . "\n";
+			$output = "\n";
+			$output .= str_repeat( '=', 80 ) . "\n";
+			$output .= "FATAL ERROR\n";
+			$output .= str_repeat( '=', 80 ) . "\n\n";
+			$output .= "Type:    $type\n";
+			$output .= "Message: $message\n";
+			$output .= "File:    $file\n";
+			$output .= "Line:    $line\n";
+			$output .= str_repeat( '=', 80 ) . "\n";
 
-			return $Output;
+			return $output;
 		}
 		else
 		{
 			// Web format (HTML)
-			$TypeEsc = htmlspecialchars( $Type, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8' );
-			$MessageEsc = htmlspecialchars( $Message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8' );
-			$FileEsc = htmlspecialchars( $File, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8' );
+			$typeEsc = htmlspecialchars( $type, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8' );
+			$messageEsc = htmlspecialchars( $message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8' );
+			$fileEsc = htmlspecialchars( $file, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8' );
 
 			return <<<HTML
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Fatal Error: $TypeEsc</title>
+	<title>Fatal Error: $typeEsc</title>
 	<style>
 		body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
 		.error-container { background: white; padding: 30px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
@@ -389,11 +389,11 @@ abstract class Base implements IApplication
 <body>
 	<div class="error-container">
 		<h1>Fatal Error</h1>
-		<div class="error-type">$TypeEsc</div>
-		<div class="error-message">$MessageEsc</div>
+		<div class="error-type">$typeEsc</div>
+		<div class="error-message">$messageEsc</div>
 		<div class="error-location">
-			<strong>File:</strong> $FileEsc<br>
-			<strong>Line:</strong> $Line
+			<strong>File:</strong> $fileEsc<br>
+			<strong>Line:</strong> $line
 		</div>
 	</div>
 </body>
@@ -405,38 +405,38 @@ HTML;
 	/**
 	 * Handler for PHP errors.
 	 *
-	 * @param int $ErrorNo
-	 * @param string $Message
-	 * @param string $File
-	 * @param int $Line
+	 * @param int $errorNo
+	 * @param string $message
+	 * @param string $file
+	 * @param int $line
 	 * @return bool
 	 */
 
-	public function phpErrorHandler( int $ErrorNo, string $Message, string $File, int $Line) : bool
+	public function phpErrorHandler( int $errorNo, string $message, string $file, int $line) : bool
 	{
-		switch( $ErrorNo )
+		switch( $errorNo )
 		{
 			case E_NOTICE:
 			case E_USER_NOTICE:
-				$Type = "Notice";
+				$type = "Notice";
 				break;
 
 			case E_WARNING:
 			case E_USER_WARNING:
-				$Type = "Warning";
+				$type = "Warning";
 				break;
 
 			case E_ERROR:
 			case E_USER_ERROR:
-				$Type = "Fatal Error";
+				$type = "Fatal Error";
 				break;
 
 			default:
-				$Type = "Unknown Error";
+				$type = "Unknown Error";
 				break;
 		}
 
-		$this->onError( sprintf( "PHP %s:  %s in %s on line %d", $Type, $Message, $File, $Line ));
+		$this->onError( sprintf( "PHP %s:  %s in %s on line %d", $type, $message, $file, $line ));
 		return true;
 	}
 
@@ -444,22 +444,22 @@ HTML;
 	 * Global exception handler for uncaught exceptions and errors
 	 * Handles both Exception and Error (PHP 7+)
 	 *
-	 * @param \Throwable $Throwable
+	 * @param \Throwable $throwable
 	 * @return void
 	 */
-	public function globalExceptionHandler( \Throwable $Throwable ): void
+	public function globalExceptionHandler( \Throwable $throwable ): void
 	{
 		// Call onCrash with error details (handles logging and state)
 		$this->onCrash([
-			'type' => get_class( $Throwable ),
-			'message' => $Throwable->getMessage(),
-			'file' => $Throwable->getFile(),
-			'line' => $Throwable->getLine(),
-			'trace' => $Throwable->getTraceAsString()
+			'type' => get_class( $throwable ),
+			'message' => $throwable->getMessage(),
+			'file' => $throwable->getFile(),
+			'line' => $throwable->getLine(),
+			'trace' => $throwable->getTraceAsString()
 		]);
 
 		// Output formatted error (HTML for web, plain text for CLI)
-		echo $this->beautifyException( $Throwable );
+		echo $this->beautifyException( $throwable );
 
 		exit( 1 );
 	}
@@ -469,32 +469,32 @@ HTML;
 	 * Base implementation outputs plain text (CLI-friendly)
 	 * MVC Application overrides this for HTML output
 	 *
-	 * @param \Throwable $Throwable
+	 * @param \Throwable $throwable
 	 * @return string
 	 */
-	public function beautifyException( \Throwable $Throwable ): string
+	public function beautifyException( \Throwable $throwable ): string
 	{
-		$Type = get_class( $Throwable );
-		$Message = $Throwable->getMessage();
-		$File = $Throwable->getFile();
-		$Line = $Throwable->getLine();
-		$Trace = $Throwable->getTraceAsString();
+		$type = get_class( $throwable );
+		$message = $throwable->getMessage();
+		$file = $throwable->getFile();
+		$line = $throwable->getLine();
+		$trace = $throwable->getTraceAsString();
 
-		$Output = "\n";
-		$Output .= str_repeat( '=', 80 ) . "\n";
-		$Output .= "APPLICATION ERROR\n";
-		$Output .= str_repeat( '=', 80 ) . "\n\n";
-		$Output .= "Type:    $Type\n";
-		$Output .= "Message: $Message\n";
-		$Output .= "File:    $File\n";
-		$Output .= "Line:    $Line\n\n";
-		$Output .= str_repeat( '-', 80 ) . "\n";
-		$Output .= "Stack Trace:\n";
-		$Output .= str_repeat( '-', 80 ) . "\n";
-		$Output .= $Trace . "\n";
-		$Output .= str_repeat( '=', 80 ) . "\n";
+		$output = "\n";
+		$output .= str_repeat( '=', 80 ) . "\n";
+		$output .= "APPLICATION ERROR\n";
+		$output .= str_repeat( '=', 80 ) . "\n\n";
+		$output .= "Type:    $type\n";
+		$output .= "Message: $message\n";
+		$output .= "File:    $file\n";
+		$output .= "Line:    $line\n\n";
+		$output .= str_repeat( '-', 80 ) . "\n";
+		$output .= "Stack Trace:\n";
+		$output .= str_repeat( '-', 80 ) . "\n";
+		$output .= $trace . "\n";
+		$output .= str_repeat( '=', 80 ) . "\n";
 
-		return $Output;
+		return $output;
 	}
 
 	/**
@@ -511,7 +511,7 @@ HTML;
 
 	public function getVersion() : string
 	{
-		return $this->_Version;
+		return $this->_version;
 	}
 
 	/**
@@ -522,8 +522,8 @@ HTML;
 	protected function executeInitializers(): void
 	{
 		Log\Log::debug( "executeInitializers()" );
-		$Initializer = new InitializerRunner( $this );
-		$Initializer->execute();
+		$initializer = new InitializerRunner( $this );
+		$initializer->execute();
 	}
 
 	/**
@@ -535,22 +535,22 @@ HTML;
 	{
 		Log\Log::debug( "initEvents()" );
 
-		$EventLoader = new EventLoader( $this );
-		$EventLoader->initEvents();
+		$eventLoader = new EventLoader( $this );
+		$eventLoader->initEvents();
 	}
 
 	/**
 	 * Call to run the application.
-	 * @param array $Argv
+	 * @param array $argv
 	 * @return bool
 	 * @throws Exception
 	 */
 
-	public function run( array $Argv = [] ): bool
+	public function run( array $argv = [] ): bool
 	{
 		$this->initErrorHandlers();
 
-		$this->_Parameters = $Argv;
+		$this->_parameters = $argv;
 
 		if( !$this->onStart() )
 		{
@@ -560,18 +560,18 @@ HTML;
 
 		try
 		{
-			Log\Log::debug( "Running application v{$this->_Version}.." );
+			Log\Log::debug( "Running application v{$this->_version}.." );
 			$this->onRun();
 		}
 		catch( Exception $exception )
 		{
-			$Message = get_class( $exception ).', msg: '.$exception->getMessage();
+			$message = get_class( $exception ).', msg: '.$exception->getMessage();
 
-			Log\Log::fatal( "Exception: $Message" );
+			Log\Log::fatal( "Exception: $message" );
 
 			$this->onCrash(
 				[
-					'message' => $Message
+					'message' => $message
 				]
 			);
 		}
@@ -587,7 +587,7 @@ HTML;
 
 	public function getParameters(): array
 	{
-		return $this->_Parameters;
+		return $this->_parameters;
 	}
 
 	/**
@@ -598,7 +598,7 @@ HTML;
 
 	public function getParameter( string $name ): mixed
 	{
-		return $this->_Parameters[ $name ];
+		return $this->_parameters[ $name ];
 	}
 
 	/**
@@ -608,7 +608,7 @@ HTML;
 
 	public function setRegistryObject( string $name, mixed $object ): void
 	{
-		$this->_Registry->set( $name, $object );
+		$this->_registry->set( $name, $object );
 	}
 
 	/**
@@ -618,7 +618,7 @@ HTML;
 
 	public function getRegistryObject( string $name ) : mixed
 	{
-		return $this->_Registry->get( $name );
+		return $this->_registry->get( $name );
 	}
 
 	/**
@@ -658,37 +658,37 @@ HTML;
 	}
 
 	/**
-	 * @param ISettingSource|null $Source
+	 * @param ISettingSource|null $source
 	 * @return void
 	 */
 
-	protected function initSettings( ?ISettingSource $Source ): void
+	protected function initSettings( ?ISettingSource $source ): void
 	{
-		$DefaultBasePath = getenv( 'SYSTEM_BASE_PATH' ) ? : '.';
-		$this->setBasePath( $DefaultBasePath );
-		$Fallback = new Env( Data\Env::getInstance( "$DefaultBasePath/.env" ) );
+		$defaultBasePath = getenv( 'SYSTEM_BASE_PATH' ) ? : '.';
+		$this->setBasePath( $defaultBasePath );
+		$fallback = new Env( Data\Env::getInstance( "$defaultBasePath/.env" ) );
 
-		if( !$Source )
+		if( !$source )
 		{
-			$this->_Settings = new SettingManager( $Fallback );
-			Registry::getInstance()->set( 'Settings', $this->_Settings );
+			$this->_settings = new SettingManager( $fallback );
+			Registry::getInstance()->set( 'Settings', $this->_settings );
 			return;
 		}
 
 		try
 		{
-			$this->_Settings = new SettingManager( $Source );
+			$this->_settings = new SettingManager( $source );
 
-			$BasePath = $this->getSetting( 'system','base_path' ) ?? $DefaultBasePath;
-			$Fallback = new Env( Data\Env::getInstance( "$BasePath/.env" ) );
-			$this->_Settings->setFallback( $Fallback );
-			$this->setBasePath( $BasePath );
+			$basePath = $this->getSetting( 'system','base_path' ) ?? $defaultBasePath;
+			$fallback = new Env( Data\Env::getInstance( "$basePath/.env" ) );
+			$this->_settings->setFallback( $fallback );
+			$this->setBasePath( $basePath );
 		}
-		catch( Exception $Exception )
+		catch( Exception $exception )
 		{
-			$this->_Settings = new SettingManager( $Fallback );
+			$this->_settings = new SettingManager( $fallback );
 		}
 
-		Registry::getInstance()->set( 'Settings', $this->_Settings );
+		Registry::getInstance()->set( 'Settings', $this->_settings );
 	}
 }

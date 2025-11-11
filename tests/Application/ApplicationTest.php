@@ -2,6 +2,7 @@
 namespace Tests\Application;
 
 use Exception;
+use Neuron\Application\CrossCutting\Event;
 use Neuron\Data\Setting\Source\Ini;
 use Neuron\Patterns\Registry;
 use PHPUnit\Framework\TestCase;
@@ -15,6 +16,12 @@ class ApplicationTest extends TestCase
 	protected function setUp(): void
 	{
 		parent::setUp();
+
+		// Reset the TestListener counter to prevent test pollution
+		TestListener::$Count = 0;
+
+		// Reset the Event singleton to prevent listener accumulation
+		Event::invalidate();
 
 		$SettingSource = new Ini( 'examples/config/application.ini' );
 		$this->_App = new AppMock( "1.0", $SettingSource );
@@ -189,24 +196,23 @@ class ApplicationTest extends TestCase
 
 	public function testEventListeners()
 	{
-		$State = TestListener::$Count;
 		$this->_App->run();
 
 		$this->assertEquals(
-			$State + 1,
+			1,
 			TestListener::$Count
 		);
 	}
 
 	public function testNullSource()
 	{
-		$State = TestListener::$Count;
 		$App = new AppMock( "1.0" );
 
-		$this->_App->run();
+		$App->run();
 
+		// App without settings won't load event listeners
 		$this->assertEquals(
-			$State + 1,
+			0,
 			TestListener::$Count
 		);
 	}

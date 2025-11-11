@@ -9,25 +9,25 @@ use Neuron\Events\Emitter;
  */
 class EventEmitter
 {
-	private Emitter $_Emitter;
+	private Emitter $_emitter;
 
 	/**
 	 *
 	 */
 	public function __construct( )
 	{
-		$this->_Emitter = new Emitter();
+		$this->_emitter = new Emitter();
 	}
 
 	/**
 	 * Registers a new broadcaster.
-	 * @param IBroadcaster $Broadcaster
+	 * @param IBroadcaster $broadcaster
 	 * @return void
 	 */
 
-	public function registerBroadcaster( IBroadcaster $Broadcaster ) : void
+	public function registerBroadcaster( IBroadcaster $broadcaster ) : void
 	{
-		$this->_Emitter->registerBroadcaster( $Broadcaster );
+		$this->_emitter->registerBroadcaster( $broadcaster );
 	}
 
 	/**
@@ -35,20 +35,20 @@ class EventEmitter
 	 * Listeners can either be an object or a class name
 	 * to be instantiated when the event is fired.
 	 *
-	 * @param array $Registry
+	 * @param array $registry
 	 */
 
-	public function registerListeners( array $Registry ) : void
+	public function registerListeners( array $registry ) : void
 	{
-		$Broadcasters = $this->_Emitter->getBroadcasters();
+		$broadcasters = $this->_emitter->getBroadcasters();
 
-		foreach( $Broadcasters as $Broadcaster )
+		foreach( $broadcasters as $broadcaster )
 		{
-			foreach( $Registry as $Class => $Listeners )
+			foreach( $registry as $class => $listeners )
 			{
-				foreach( $Listeners as $Listener )
+				foreach( $listeners as $listener )
 				{
-					$Broadcaster->addListener( $Class, $Listener );
+					$broadcaster->addListener( $class, $listener );
 				}
 			}
 		}
@@ -56,28 +56,28 @@ class EventEmitter
 
 	/**
 	 * Registers a listener to an event.
-	 * @param string $EventName
-	 * @param string $Listener
+	 * @param string $eventName
+	 * @param string $listener
 	 */
 
-	public function registerListener( string $EventName, string $Listener ) : void
+	public function registerListener( string $eventName, string $listener ) : void
 	{
-		$Broadcasters = $this->_Emitter->getBroadcasters();
+		$broadcasters = $this->_emitter->getBroadcasters();
 
-		foreach( $Broadcasters as $Broadcaster )
+		foreach( $broadcasters as $broadcaster )
 		{
-			$Broadcaster->addListener( $EventName, $Listener );
+			$broadcaster->addListener( $eventName, $listener );
 		}
 	}
 
 	/**
 	 * Emits an event across all broadcasters to all registered
 	 * listeners.
-	 * @param $Event
+	 * @param $event
 	 */
 
-	public function emit( $Event ) : void
+	public function emit( $event ) : void
 	{
-		$this->_Emitter->emit( $Event );
+		$this->_emitter->emit( $event );
 	}
 }
