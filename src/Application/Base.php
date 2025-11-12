@@ -106,7 +106,7 @@ abstract class Base implements IApplication
 	}
 
 	/**
-	 * Initializes the logger based on the parameters set in config.yaml.
+	 * Initializes the logger based on the parameters set in neuron.yaml.
 	 * 	destination
 	 * 	format
 	 * 	file
