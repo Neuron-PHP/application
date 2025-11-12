@@ -63,7 +63,7 @@ class MyApplication extends Base
 }
 
 // Bootstrap and run
-$settings = new Yaml('config/config.yaml');
+$settings = new Yaml('config/neuron.yaml');
 $app = new MyApplication('1.0.0', $settings);
 $app->run();
 ```
@@ -158,7 +158,7 @@ class MyApp extends Base
 
 ```php
 // Create and configure
-$app = new MyApp('1.0.0', new Yaml('config.yaml'));
+$app = new MyApp('1.0.0', new Yaml('neuron.yaml'));
 
 // Set parameters (e.g., from command line)
 $app->setParameters($_SERVER['argv']);
@@ -196,7 +196,7 @@ $app = new MyApp('1.0.0');
 
 ### Configuration Structure
 
-Example `config.yaml`:
+Example `neuron.yaml`:
 
 ```yaml
 system:
@@ -256,7 +256,7 @@ class MyApp extends Base
 
 ```php
 // Configuration with environment fallback
-$yamlSource = new Yaml('config.yaml');
+$yamlSource = new Yaml('neuron.yaml');
 $envFallback = new Env();
 
 $settings = new SettingManager($yamlSource);
@@ -265,7 +265,7 @@ $settings->setFallback($envFallback);
 $app = new MyApp('1.0.0', $settings);
 
 // Now settings check YAML first, then environment variables
-$apiKey = $app->getSetting('api', 'key');  // Checks config.yaml then API_KEY env var
+$apiKey = $app->getSetting('api', 'key');  // Checks neuron.yaml then API_KEY env var
 ```
 
 ## Event System
