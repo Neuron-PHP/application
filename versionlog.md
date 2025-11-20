@@ -1,3 +1,5 @@
+## 0.8.8
+
 ## 0.8.7 2025-11-19
 * Config is no longer loaded it it's already in the registry.
 
