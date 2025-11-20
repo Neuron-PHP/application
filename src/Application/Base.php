@@ -19,8 +19,8 @@ use Neuron\Util;
 
 abstract class Base implements IApplication
 {
-	private		string         $_basePath;
-	private		string         $_eventListenersPath;
+	private		string         	$_basePath;
+	private		string         	$_eventListenersPath;
 	private		?Registry			$_registry;
 	protected	array					$_parameters;
 	protected	?SettingManager	$_settings = null;
@@ -664,6 +664,13 @@ HTML;
 
 	protected function initSettings( ?ISettingSource $source ): void
 	{
+		$this->_settings = Registry::getInstance()->get( 'Settings' );
+
+		if( $this->_settings )
+		{
+			return;
+		}
+
 		$defaultBasePath = getenv( 'SYSTEM_BASE_PATH' ) ? : '.';
 		$this->setBasePath( $defaultBasePath );
 		$fallback = new Env( Data\Env::getInstance( "$defaultBasePath/.env" ) );

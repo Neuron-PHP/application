@@ -206,6 +206,7 @@ class ApplicationTest extends TestCase
 
 	public function testNullSource()
 	{
+		Registry::getInstance()->set( 'Settings', null );
 		$App = new AppMock( "1.0" );
 
 		$App->run();

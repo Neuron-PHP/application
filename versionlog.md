@@ -1,3 +1,6 @@
+## 0.8.7 2025-11-19
+* Config is no longer loaded it it's already in the registry.
+
 ## 0.8.6 2025-11-12
 * Renamed config.yaml to neuron.yaml
 
