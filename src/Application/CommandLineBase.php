@@ -156,7 +156,7 @@ abstract class CommandLineBase extends Base
 	{
 		if( !$this->isCommandLine() )
 		{
-			Log\Log::fatal( "Application must be run from the command line." );
+			Log\Log::critical( "Application must be run from the command line." );
 			return false;
 		}
 

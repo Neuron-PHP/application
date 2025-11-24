@@ -121,7 +121,7 @@ abstract class Base implements IApplication
 
 		$log->initIfNeeded();
 
-		$log->Logger->reset();
+		$log->logger->reset();
 
 		// Create a new default logger using the destination and format
 		// specified in the settings.
@@ -150,7 +150,7 @@ abstract class Base implements IApplication
 
 		$defaultLog->setRunLevel( $this->getSetting( 'logging', 'level' ) ?? (int)ILogger::DEBUG );
 
-		$log->Logger->addLog( $defaultLog );
+		$log->logger->addLog( $defaultLog );
 
 		$log->serialize();
 	}
@@ -297,7 +297,7 @@ abstract class Base implements IApplication
 	protected function onCrash( array $error ) : void
 	{
 		$this->_crashed = true;
-		Log\Log::fatal( "onCrash(): ".$error[ 'message' ] );
+		Log\Log::critical( "onCrash(): ".$error[ 'message' ] );
 	}
 
 	/**
@@ -554,7 +554,7 @@ HTML;
 
 		if( !$this->onStart() )
 		{
-			Log\Log::fatal( "onStart() returned false. Aborting." );
+			Log\Log::critical( "onStart() returned false. Aborting." );
 			return false;
 		}
 
@@ -567,7 +567,7 @@ HTML;
 		{
 			$message = get_class( $exception ).', msg: '.$exception->getMessage();
 
-			Log\Log::fatal( "Exception: $message" );
+			Log\Log::critical( "Exception: $message" );
 
 			$this->onCrash(
 				[
