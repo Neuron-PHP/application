@@ -13,7 +13,7 @@
         "ext-curl": "*",
         "ext-json": "*",
         "neuron-php/patterns": "^0.7.2",
-        "neuron-php/logging": "0.8.*",
+        "neuron-php/logging": "0.9.*",
         "neuron-php/util": "0.6.*",
         "neuron-php/events": "^0.6.2",
         "symfony/yaml": "^6.4"

@@ -121,7 +121,7 @@ abstract class Base implements IApplication
 
 		$log->initIfNeeded();
 
-		$log->Logger->reset();
+		$log->logger->reset();
 
 		// Create a new default logger using the destination and format
 		// specified in the settings.
