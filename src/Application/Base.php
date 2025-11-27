@@ -270,6 +270,9 @@ abstract class Base implements IApplication
 	protected function onFinish(): void
 	{
 		Log\Log::debug( "onFinish()" );
+
+		// Emit application shutting down event
+		CrossCutting\Event::emit( new Events\ApplicationShuttingDownEvent() );
 	}
 
 	/**
@@ -298,6 +301,9 @@ abstract class Base implements IApplication
 	{
 		$this->_crashed = true;
 		Log\Log::critical( "onCrash(): ".$error[ 'message' ] );
+
+		// Emit application crashed event
+		CrossCutting\Event::emit( new Events\ApplicationCrashedEvent( $error ) );
 	}
 
 	/**
@@ -323,6 +329,14 @@ abstract class Base implements IApplication
 			];
 
 			$typeName = $typeNames[ $error['type'] ] ?? 'Unknown Fatal Error';
+
+			// Emit fatal error event
+			CrossCutting\Event::emit( new Events\FatalErrorEvent(
+				$typeName,
+				$error['message'],
+				$error['file'],
+				$error['line']
+			) );
 
 			// Call onCrash with detailed error information
 			$this->onCrash([
@@ -435,6 +449,14 @@ HTML;
 				$type = "Unknown Error";
 				break;
 		}
+
+		// Emit error occurred event
+		CrossCutting\Event::emit( new Events\ErrorOccurredEvent(
+			$errorNo,
+			$message,
+			$file,
+			$line
+		) );
 
 		$this->onError( sprintf( "PHP %s:  %s in %s on line %d", $type, $message, $file, $line ));
 		return true;
