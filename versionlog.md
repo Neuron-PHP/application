@@ -1,4 +1,5 @@
 ## 0.8.9
+* Added application events.
 
 ## 0.8.8 2025-11-24
 
