@@ -3,7 +3,7 @@ namespace Tests\Application;
 
 use Exception;
 use Neuron\Application\CrossCutting\Event;
-use Neuron\Data\Setting\Source\Ini;
+use Neuron\Data\Settings\Source\Ini;
 use Neuron\Patterns\Registry;
 use PHPUnit\Framework\TestCase;
 use Tests\AppMock;

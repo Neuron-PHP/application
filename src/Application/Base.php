@@ -4,9 +4,9 @@ namespace Neuron\Application;
 
 use Exception;
 use Neuron\Data;
-use Neuron\Data\Setting\SettingManager;
-use Neuron\Data\Setting\Source\Env;
-use Neuron\Data\Setting\Source\ISettingSource;
+use Neuron\Data\Settings\SettingManager;
+use Neuron\Data\Settings\Source\Env;
+use Neuron\Data\Settings\Source\ISettingSource;
 use Neuron\Log;
 use Neuron\Log\ILogger;
 use Neuron\Log\Logger;

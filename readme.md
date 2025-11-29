@@ -40,7 +40,7 @@ composer require neuron-php/application
 
 ```php
 use Neuron\Application\Base;
-use Neuron\Data\Setting\Source\Yaml;
+use Neuron\Data\Settings\Source\Yaml;
 
 class MyApplication extends Base
 {
@@ -174,9 +174,9 @@ $app->run(['--verbose', '--mode=production']);
 The application supports multiple configuration sources through the `ISettingSource` interface:
 
 ```php
-use Neuron\Data\Setting\Source\Yaml;
-use Neuron\Data\Setting\Source\Ini;
-use Neuron\Data\Setting\Source\Env;
+use Neuron\Data\Settings\Source\Yaml;
+use Neuron\Data\Settings\Source\Ini;
+use Neuron\Data\Settings\Source\Env;
 
 // YAML configuration
 $yamlSource = new Yaml('config/app.yaml');
@@ -670,7 +670,7 @@ class ProductionApp extends Base
 ### Application Versioning
 
 ```php
-use Neuron\Data\Object\Version;
+use Neuron\Data\Objects\Version;
 
 // Load version from file
 $version = new Version();
