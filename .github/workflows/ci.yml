@@ -12,10 +12,10 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
-    - name: Install System Dependencies (Git, Zip, Unzip)
+    - name: Install System Dependencies (Git, Zip, Unzip, GPG)
       run: |
         apt-get update
-        apt-get install -y unzip git zip
+        apt-get install -y unzip git zip gpg
 
     - name: Install and Enable extensions
       run: |
