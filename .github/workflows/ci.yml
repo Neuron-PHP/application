@@ -37,6 +37,10 @@ jobs:
         XDEBUG_MODE: coverage
       run: vendor/bin/phpunit tests --coverage-clover coverage.xml
 
+    - name: List files after test
+      run: ls -la coverage.xml || echo "Coverage file not found"
+
+
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
