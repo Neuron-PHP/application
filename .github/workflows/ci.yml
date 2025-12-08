@@ -19,8 +19,10 @@ jobs:
 
     - name: Install and Enable extensions
       run: |
-        docker-php-ext-install sockets calendar xdebug
-        docker-php-ext-enable sockets calendar xdebug
+        docker-php-ext-install sockets calendar
+        docker-php-ext-enable sockets calendar
+        pecl install xdebug
+        docker-php-ext-enable xdebug
 
     - name: Install Composer
       run: |
