@@ -19,8 +19,8 @@ jobs:
 
     - name: Install and Enable extensions
       run: |
-        docker-php-ext-install sockets calendar
-        docker-php-ext-enable sockets calendar
+        docker-php-ext-install sockets calendar xdebug
+        docker-php-ext-enable sockets calendar xdebug
 
     - name: Install Composer
       run: |
@@ -30,5 +30,14 @@ jobs:
     - name: Install Dependencies
       run: composer install --prefer-dist --no-progress
 
-    - name: Run PHPUnit
-      run: vendor/bin/phpunit tests
+    - name: Run PHPUnit with Coverage
+      env:
+        XDEBUG_MODE: coverage
+      run: vendor/bin/phpunit tests --coverage-clover coverage.xml
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        file: ./coverage.xml
+        flags: application
+        token: ${{ secrets.CODECOV_TOKEN }}
