@@ -47,4 +47,11 @@ class CommandLineBaseTest extends TestCase
 
 		$this->assertEquals(10, $this->CommandLine->Interval );
 	}
+
+	public function testSwitchWithParamReturnsFalse()
+	{
+		// Test handler with parameter that returns false
+		$result = $this->CommandLine->run(['--fail', 'test']);
+		$this->assertFalse($result);
+	}
 }

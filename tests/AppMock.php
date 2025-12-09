@@ -64,4 +64,10 @@ class AppMock extends Base
 
 		return false;
 	}
+
+	// Public wrapper to test protected formatFatalError method
+	public function formatFatalError( string $type, string $message, string $file, int $line ): string
+	{
+		return parent::formatFatalError( $type, $message, $file, $line );
+	}
 }
