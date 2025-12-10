@@ -42,4 +42,4 @@ composer.lock
 
 /examples/test.log
 
-coverage.xml
+coverage*
