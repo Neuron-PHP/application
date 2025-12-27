@@ -26,12 +26,19 @@ class TestCommandLine extends \Neuron\Application\CommandLineBase
 		return true;
 	}
 
+	protected function failCommand( string $value ): bool
+	{
+		// Handler that returns false when given a parameter
+		return false;
+	}
+
 
 	protected function onStart(): bool
 	{
 		$this->addHandler( '--exit', 'Test single execution command.', 'exitCommand' );
 		$this->addHandler( '--poll', 'Performs a single poll and executes all ready jobs.', 'pollCommand' );
 		$this->addHandler( '--interval', 'Set the interval between polls in seconds.', 'intervalCommand', true );
+		$this->addHandler( '--fail', 'Test handler that fails with parameter.', 'failCommand', true );
 
 		return parent::onStart();
 	}

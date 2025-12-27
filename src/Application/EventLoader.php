@@ -3,6 +3,8 @@
 namespace Neuron\Application;
 
 use Neuron\Application\CrossCutting\Event;
+use Neuron\Core\System\IFileSystem;
+use Neuron\Core\System\RealFileSystem;
 use Neuron\Events\Broadcasters\Generic;
 use Neuron\Log;
 use Symfony\Component\Yaml\Exception\ParseException;
@@ -14,10 +16,16 @@ use Symfony\Component\Yaml\Yaml;
 class EventLoader
 {
 	private Base $_base;
+	private IFileSystem $fs;
 
-	public function __construct( Base $base )
+	/**
+	 * @param Base $base
+	 * @param IFileSystem|null $fs File system implementation (null = use real file system)
+	 */
+	public function __construct( Base $base, ?IFileSystem $fs = null )
 	{
 		$this->_base = $base;
+		$this->fs = $fs ?? new RealFileSystem();
 	}
 
 	/**
@@ -29,19 +37,28 @@ class EventLoader
 		Event::registerBroadcaster( new Generic() );
 
 		$path = $this->getPath();
+		$eventFile = $path . '/event-listeners.yaml';
 
-		if( !file_exists( $path . '/event-listeners.yaml' ) )
+		if( !$this->fs->fileExists( $eventFile ) )
 		{
+			return;
+		}
+
+		$content = $this->fs->readFile( $eventFile );
+
+		if( $content === false )
+		{
+			Log\Log::error( "Failed to read event listeners file: $eventFile" );
 			return;
 		}
 
 		try
 		{
-			$data = Yaml::parseFile( $path . '/event-listeners.yaml' );
+			$data = Yaml::parse( $content );
 		}
 		catch( ParseException $exception )
 		{
-			Log\Log::error( "Failed to load event listeners: " . $exception->getMessage() );
+			Log\Log::error( "Failed to parse event listeners: " . $exception->getMessage() );
 			return;
 		}
 

@@ -587,6 +587,16 @@ HTML;
 		}
 		catch( Exception $exception )
 		{
+			// Check if this exception should bubble up to caller
+			// Applications can register exception classes via Registry 'BubbleExceptions'
+			$bubbleExceptions = Registry::getInstance()->get( 'BubbleExceptions' ) ?? [];
+
+			if( in_array( get_class( $exception ), $bubbleExceptions ) )
+			{
+				// Re-throw bubble exceptions without calling onCrash
+				throw $exception;
+			}
+
 			$message = get_class( $exception ).', msg: '.$exception->getMessage();
 
 			Log\Log::critical( "Exception: $message" );

@@ -1,4 +1,5 @@
 [![CI](https://github.com/Neuron-PHP/application/actions/workflows/ci.yml/badge.svg)](https://github.com/Neuron-PHP/application/actions)
+[![codecov](https://codecov.io/gh/Neuron-PHP/application/branch/develop/graph/badge.svg)](https://codecov.io/gh/Neuron-PHP/application)
 # Neuron-PHP Application
 
 A comprehensive application framework component for PHP 8.4+ that provides base classes, configuration management, event handling, and lifecycle management for building robust applications with the Neuron framework.
