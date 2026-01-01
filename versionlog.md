@@ -1,4 +1,5 @@
 ## 0.8.12
+* Added psr-11 container support.
 
 ## 0.8.11 2025-12-26
 
