@@ -481,7 +481,7 @@ HTML;
 		]);
 
 		// Output formatted error (HTML for web, plain text for CLI)
-		echo $this->beautifyException( $throwable );
+		echo static::beautifyException( $throwable );
 
 		exit( 1 );
 	}
@@ -494,7 +494,7 @@ HTML;
 	 * @param \Throwable $throwable
 	 * @return string
 	 */
-	public function beautifyException( \Throwable $throwable ): string
+	public static function beautifyException( \Throwable $throwable ): string
 	{
 		$type = get_class( $throwable );
 		$message = $throwable->getMessage();
