@@ -28,10 +28,5 @@
             "Tests\\": "tests/",
             "ComponentTest\\": "examples/"
         }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Neuron\\Core\\": "../core/src/Core/"
-        }
     }
 }
