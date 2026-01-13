@@ -3,6 +3,7 @@
 namespace Neuron\Application;
 
 use Exception;
+use Neuron\Core\Registry\RegistryKeys;
 use Neuron\Data;
 use Neuron\Data\Settings\SettingManager;
 use Neuron\Data\Settings\Source\Env;
@@ -589,7 +590,7 @@ HTML;
 		{
 			// Check if this exception should bubble up to caller
 			// Applications can register exception classes via Registry 'PassthroughExceptions'
-			$passthroughExceptions = Registry::getInstance()->get( 'PassthroughExceptions' ) ?? [];
+			$passthroughExceptions = Registry::getInstance()->get( RegistryKeys::PASSTHROUGH_EXCEPTIONS_LEGACY ) ?? [];
 
 			if( in_array( get_class( $exception ), $passthroughExceptions ) )
 			{
@@ -696,7 +697,7 @@ HTML;
 
 	protected function initSettings( ?ISettingSource $source ): void
 	{
-		$this->_settings = Registry::getInstance()->get( 'Settings' );
+		$this->_settings = Registry::getInstance()->get( RegistryKeys::SETTINGS );
 
 		if( $this->_settings )
 		{
@@ -710,7 +711,7 @@ HTML;
 		if( !$source )
 		{
 			$this->_settings = new SettingManager( $fallback );
-			Registry::getInstance()->set( 'Settings', $this->_settings );
+			Registry::getInstance()->set( RegistryKeys::SETTINGS, $this->_settings );
 			return;
 		}
 
@@ -728,6 +729,6 @@ HTML;
 			$this->_settings = new SettingManager( $fallback );
 		}
 
-		Registry::getInstance()->set( 'Settings', $this->_settings );
+		Registry::getInstance()->set( RegistryKeys::SETTINGS, $this->_settings );
 	}
 }

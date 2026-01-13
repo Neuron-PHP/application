@@ -3,6 +3,7 @@ namespace Tests\Application;
 
 use Exception;
 use Neuron\Application\CrossCutting\Event;
+use Neuron\Core\Registry\RegistryKeys;
 use Neuron\Data\Settings\Source\Ini;
 use Neuron\Patterns\Registry;
 use PHPUnit\Framework\TestCase;
@@ -48,7 +49,7 @@ class ApplicationTest extends TestCase
 	{
 		$this->_App->run();
 		$this->assertNotNull(
-			Registry::getInstance()->get( 'Settings' )
+			Registry::getInstance()->get( RegistryKeys::SETTINGS )
 		);
 	}
 
@@ -206,7 +207,7 @@ class ApplicationTest extends TestCase
 
 	public function testNullSource()
 	{
-		Registry::getInstance()->set( 'Settings', null );
+		Registry::getInstance()->set( RegistryKeys::SETTINGS, null );
 		$App = new AppMock( "1.0" );
 
 		$App->run();
@@ -375,7 +376,7 @@ class ApplicationTest extends TestCase
 		$existingSettings = new \Neuron\Data\Settings\SettingManager(
 			new Ini('examples/config/application.ini')
 		);
-		Registry::getInstance()->set('Settings', $existingSettings);
+		Registry::getInstance()->set(RegistryKeys::SETTINGS, $existingSettings);
 
 		$app = new AppMock("2.0", new Ini('examples/config/application.ini'));
 
