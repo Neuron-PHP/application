@@ -538,7 +538,7 @@ class ApplicationTest extends TestCase
 	public function testInitSettingsWithSettingManagerUsesItDirectly()
 	{
 		// Clear registry
-		Registry::getInstance()->set('Settings', null);
+		Registry::getInstance()->set(RegistryKeys::SETTINGS, null);
 
 		// Create a SettingManager with a raw source
 		$rawSource = new Ini('examples/config/application.ini');
@@ -560,7 +560,7 @@ class ApplicationTest extends TestCase
 	public function testInitSettingsWithRawSourceWrapsIt()
 	{
 		// Clear registry
-		Registry::getInstance()->set('Settings', null);
+		Registry::getInstance()->set(RegistryKeys::SETTINGS, null);
 
 		// Pass a raw source (not a SettingManager)
 		$rawSource = new Ini('examples/config/application.ini');
@@ -574,12 +574,12 @@ class ApplicationTest extends TestCase
 		$this->assertInstanceOf(Ini::class, $appSettings->getSource());
 	}
 
-	public function testInitSettingsWithSettingManagerPreservesFallback()
+	public function testInitSettingsSetsEnvFallbackWhenNoneProvided()
 	{
 		// Clear registry
-		Registry::getInstance()->set('Settings', null);
+		Registry::getInstance()->set(RegistryKeys::SETTINGS, null);
 
-		// Create a SettingManager with custom fallback
+		// Create a SettingManager without a fallback
 		$rawSource = new Ini('examples/config/application.ini');
 		$settingManager = new \Neuron\Data\Settings\SettingManager($rawSource);
 
