@@ -717,7 +717,16 @@ HTML;
 
 		try
 		{
-			$this->_settings = new SettingManager( $source );
+			// If source is already a SettingManager, use it directly (avoids double-wrapping)
+			// Otherwise wrap the raw source in a SettingManager (backward compatibility)
+			if( $source instanceof SettingManager )
+			{
+				$this->_settings = $source;
+			}
+			else
+			{
+				$this->_settings = new SettingManager( $source );
+			}
 
 			$basePath = $this->getSetting( 'system','base_path' ) ?? $defaultBasePath;
 			$fallback = new Env( Data\Env::getInstance( "$basePath/.env" ) );

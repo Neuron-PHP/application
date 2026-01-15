@@ -1,14 +1,14 @@
+## 0.8.16 2026-01-15
+* Fix to support setting managers or sources correctly without incurring a manager that contains a manager.
+
 ## 0.8.15 2026-01-13
-
 ## 0.8.14 2026-01-12
-
 ## 0.8.13 2026-01-06
 
 ## 0.8.12 2026-01-01
 * Added psr-11 container support.
 
 ## 0.8.11 2025-12-26
-
 ## 0.8.10 2025-11-28
 
 ## 0.8.9 2025-11-27
@@ -23,20 +23,16 @@
 * Renamed config.yaml to neuron.yaml
 
 ## 0.8.5 2025-11-11
-
 ## 0.8.4 2025-11-10
-
 ## 0.8.3 2025-11-10
 * Improved error handling.
 
 ## 0.8.2 2025-11-08
-
 ## 0.8.1 2025-11-06
 
 * Added getSettingManager() method to provide access to SettingManager instance
 
 ## 0.7.1 2025-11-04
-
 ## 0.7.0 2025-08-14
 * Refactored get/set setting methods.
 
@@ -44,9 +40,7 @@
 * Added the Crashed state.
 
 ## 0.6.32 2025-05-21
-
 ## 0.6.31
-
 ## 0.6.30 2025-02-06
 * Transitioned from core package to application.
 
