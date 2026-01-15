@@ -1,3 +1,5 @@
+## 0.8.17
+
 ## 0.8.16 2026-01-15
 * Fix to support setting managers or sources correctly without incurring a manager that contains a manager.
 
