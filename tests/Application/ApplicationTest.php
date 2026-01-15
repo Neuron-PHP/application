@@ -534,5 +534,62 @@ class ApplicationTest extends TestCase
 
 		$this->assertNotNull($app->getSettingManager());
 	}
+
+	public function testInitSettingsWithSettingManagerUsesItDirectly()
+	{
+		// Clear registry
+		Registry::getInstance()->set('Settings', null);
+
+		// Create a SettingManager with a raw source
+		$rawSource = new Ini('examples/config/application.ini');
+		$settingManager = new \Neuron\Data\Settings\SettingManager($rawSource);
+
+		// Pass the SettingManager to the app
+		$app = new AppMock("2.0", $settingManager);
+
+		// The app should use the SettingManager directly (not wrap it again)
+		$appSettings = $app->getSettingManager();
+		$this->assertSame($settingManager, $appSettings);
+
+		// Verify we don't have double-wrapping by checking the internal source
+		// If double-wrapped, getSource() would return a SettingManager instead of the raw Ini
+		$this->assertInstanceOf(Ini::class, $appSettings->getSource());
+		$this->assertNotInstanceOf(\Neuron\Data\Settings\SettingManager::class, $appSettings->getSource());
+	}
+
+	public function testInitSettingsWithRawSourceWrapsIt()
+	{
+		// Clear registry
+		Registry::getInstance()->set('Settings', null);
+
+		// Pass a raw source (not a SettingManager)
+		$rawSource = new Ini('examples/config/application.ini');
+		$app = new AppMock("2.0", $rawSource);
+
+		// The app should wrap it in a SettingManager
+		$appSettings = $app->getSettingManager();
+		$this->assertInstanceOf(\Neuron\Data\Settings\SettingManager::class, $appSettings);
+
+		// Verify the raw source is wrapped
+		$this->assertInstanceOf(Ini::class, $appSettings->getSource());
+	}
+
+	public function testInitSettingsWithSettingManagerPreservesFallback()
+	{
+		// Clear registry
+		Registry::getInstance()->set('Settings', null);
+
+		// Create a SettingManager with custom fallback
+		$rawSource = new Ini('examples/config/application.ini');
+		$settingManager = new \Neuron\Data\Settings\SettingManager($rawSource);
+
+		// Pass the SettingManager to the app
+		$app = new AppMock("2.0", $settingManager);
+
+		// The app should set a fallback (env variables)
+		$appSettings = $app->getSettingManager();
+		$this->assertNotNull($appSettings->getFallback());
+		$this->assertInstanceOf(\Neuron\Data\Settings\Source\Env::class, $appSettings->getFallback());
+	}
 }
 
