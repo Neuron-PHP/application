@@ -474,7 +474,6 @@ class ApplicationTest extends TestCase
 		// Use reflection to call protected onError
 		$reflection = new \ReflectionClass($this->_App);
 		$method = $reflection->getMethod('onError');
-		$method->setAccessible(true);
 
 		// Parent's onError returns true (AppMock overrides to return false)
 		$app = new AppMock("1.0", new Ini('examples/config/application.ini'));
@@ -511,7 +510,6 @@ class ApplicationTest extends TestCase
 		// Use reflection to call protected executeInitializers
 		$reflection = new \ReflectionClass($this->_App);
 		$method = $reflection->getMethod('executeInitializers');
-		$method->setAccessible(true);
 
 		$method->invoke($this->_App);
 
