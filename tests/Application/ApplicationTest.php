@@ -337,6 +337,24 @@ class ApplicationTest extends TestCase
 		$this->assertTrue($result);
 	}
 
+	public function testPhpErrorHandlerWithDeprecatedDoesNotCallOnError()
+	{
+		$this->_App->DidError = false;
+		$this->_App->setHandleErrors(true);
+		$result = $this->_App->phpErrorHandler(E_DEPRECATED, 'Test deprecated', __FILE__, __LINE__);
+		$this->assertTrue($result);
+		$this->assertFalse($this->_App->DidError);
+	}
+
+	public function testPhpErrorHandlerWithUserDeprecatedDoesNotCallOnError()
+	{
+		$this->_App->DidError = false;
+		$this->_App->setHandleErrors(true);
+		$result = $this->_App->phpErrorHandler(E_USER_DEPRECATED, 'Test user deprecated', __FILE__, __LINE__);
+		$this->assertTrue($result);
+		$this->assertFalse($this->_App->DidError);
+	}
+
 	public function testBeautifyException()
 	{
 		$exception = new Exception('Test exception message');

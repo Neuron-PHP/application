@@ -441,6 +441,11 @@ HTML;
 				$type = "Warning";
 				break;
 
+			case E_DEPRECATED:
+			case E_USER_DEPRECATED:
+				$type = "Deprecated";
+				break;
+
 			case E_ERROR:
 			case E_USER_ERROR:
 				$type = "Fatal Error";
@@ -459,7 +464,15 @@ HTML;
 			$line
 		) );
 
-		$this->onError( sprintf( "PHP %s:  %s in %s on line %d", $type, $message, $file, $line ));
+		$formatted = sprintf( "PHP %s:  %s in %s on line %d", $type, $message, $file, $line );
+
+		if( $errorNo === E_DEPRECATED || $errorNo === E_USER_DEPRECATED )
+		{
+			Log\Log::warning( $formatted );
+			return true;
+		}
+
+		$this->onError( $formatted );
 		return true;
 	}
 
