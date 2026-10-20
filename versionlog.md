@@ -1,3 +1,10 @@
+## 0.8.19 2026-10-20
+
+* Added `Base::start()` and `Base::finish()`, the two halves of `run()` without
+  the request handling, so long-running processes (queue workers, the
+  scheduler) can boot an application once, keep it alive, and shut it down
+  cleanly. `start()` runs `onStart()` and returns false if it declines.
+
 ## 0.8.18 2026-09-10
 
 ## 0.8.17 2026-06-05

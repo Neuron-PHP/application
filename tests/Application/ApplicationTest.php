@@ -160,6 +160,46 @@ class ApplicationTest extends TestCase
 		);
 	}
 
+	public function testStartRunsInitializersWithoutOnRun()
+	{
+		// start() must wire the application (initializers, events) exactly as
+		// run() does, but never invoke onRun(): AppMock::onRun() emits
+		// TestEvent, so an unchanged listener proves it was not called.
+		Registry::getInstance()->set( 'examples\Initializers\InitTest', null );
+		$this->_App->setRegistryObject( 'Initializers.Path', 'examples/Initializers' );
+		$this->_App->setRegistryObject( 'Initializers.Namespace', 'ComponentTest\Initializers\\' );
+
+		$this->assertTrue( $this->_App->start() );
+
+		$this->assertEquals(
+			'Hello World!',
+			Registry::getInstance()->get( 'examples\Initializers\InitTest' )
+		);
+	}
+
+	public function testStartReturnsFalseWhenOnStartDeclines()
+	{
+		$this->_App->FailStart = true;
+
+		$this->assertFalse( $this->_App->start() );
+	}
+
+	public function testFinishEmitsShutdownEvent()
+	{
+		$this->_App->start();
+
+		Event::registerListener(
+			\Neuron\Application\Events\ApplicationShuttingDownEvent::class,
+			TestListener::class
+		);
+
+		$before = TestListener::$Count;
+
+		$this->_App->finish();
+
+		$this->assertEquals( $before + 1, TestListener::$Count );
+	}
+
 	public function testGetParameters()
 	{
 		$this->_App->run( [ 'test' => 'test' ] );
