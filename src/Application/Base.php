@@ -576,6 +576,39 @@ HTML;
 	}
 
 	/**
+	 * Run the startup half of the lifecycle without onRun().
+	 *
+	 * For long-lived processes that need the application fully wired (events,
+	 * initializers, and whatever subclasses add in onStart()) but never handle
+	 * a request: queue workers and schedulers. Pair with finish(). Error
+	 * handlers are deliberately not installed; the host process owns those.
+	 *
+	 * @return bool False if onStart() declined to start.
+	 */
+
+	public function start(): bool
+	{
+		if( !$this->onStart() )
+		{
+			Log\Log::critical( "onStart() returned false. Application not started." );
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Run the shutdown half of the lifecycle. Counterpart of start().
+	 *
+	 * @return void
+	 */
+
+	public function finish(): void
+	{
+		$this->onFinish();
+	}
+
+	/**
 	 * Call to run the application.
 	 * @param array $argv
 	 * @return bool
