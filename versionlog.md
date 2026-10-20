@@ -1,3 +1,5 @@
+## 0.8.20
+
 ## 0.8.19 2026-10-20
 
 * Added `Base::start()` and `Base::finish()`, the two halves of `run()` without
