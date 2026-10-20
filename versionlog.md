@@ -1,4 +1,4 @@
-## 0.8.19
+## 0.8.19 2026-10-20
 
 * Added `Base::start()` and `Base::finish()`, the two halves of `run()` without
   the request handling, so long-running processes (queue workers, the
