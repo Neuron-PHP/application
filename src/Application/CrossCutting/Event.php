@@ -51,6 +51,18 @@ class Event extends Memory
 	}
 
 	/**
+	 * @return IBroadcaster[]
+	 */
+
+	public static function getBroadcasters() : array
+	{
+		$emitter = self::getInstance();
+		$emitter->initIfNeeded();
+
+		return $emitter->getEmitter()->getBroadcasters();
+	}
+
+	/**
 	 * @param array $registry
 	 * @return void
 	 */
