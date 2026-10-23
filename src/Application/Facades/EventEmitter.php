@@ -31,6 +31,16 @@ class EventEmitter
 	}
 
 	/**
+	 * The registered broadcasters.
+	 * @return IBroadcaster[]
+	 */
+
+	public function getBroadcasters() : array
+	{
+		return $this->_emitter->getBroadcasters();
+	}
+
+	/**
 	 * Maps an array of events to an array of listeners.
 	 * Listeners can either be an object or a class name
 	 * to be instantiated when the event is fired.

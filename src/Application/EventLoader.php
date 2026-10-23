@@ -29,12 +29,23 @@ class EventLoader
 	}
 
 	/**
+	 * Register the in-process broadcaster, if there is not one already, and map
+	 * the listeners in event-listeners.yaml to their events.
+	 *
+	 * Safe to call more than once. A broadcaster is only skipped as a duplicate
+	 * when it is the same object, and each listener is added to every
+	 * broadcaster, so a second Generic here used to receive every listener
+	 * again and each event reached each listener twice.
+	 *
 	 * @return void
 	 */
 
 	public function initEvents(): void
 	{
-		Event::registerBroadcaster( new Generic() );
+		if( !self::hasInProcessBroadcaster() )
+		{
+			Event::registerBroadcaster( new Generic() );
+		}
 
 		$path = $this->getPath();
 		$eventFile = $path . '/event-listeners.yaml';
@@ -63,6 +74,27 @@ class EventLoader
 		}
 
 		$this->loadEvents( $data[ 'events' ] );
+	}
+
+	/**
+	 * Whether a Generic broadcaster is registered already. Broadcasters of
+	 * other kinds - ones that forward events elsewhere - are not counted: they
+	 * sit alongside it.
+	 *
+	 * @return bool
+	 */
+
+	private static function hasInProcessBroadcaster(): bool
+	{
+		foreach( Event::getBroadcasters() as $broadcaster )
+		{
+			if( $broadcaster instanceof Generic )
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
