@@ -217,7 +217,7 @@ class ApplicationTest extends TestCase
 	public function testTimeZone()
 	{
 		$this->_App->run();
-		$this->assertEquals( 'US/Central', date_default_timezone_get() );
+		$this->assertEquals( 'America/Chicago', date_default_timezone_get() );
 	}
 
 	/**
